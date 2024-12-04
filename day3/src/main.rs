@@ -3,6 +3,8 @@ use regex::Regex;
 use std::sync::LazyLock;
 
 static MULS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").unwrap());
+static SEGS: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?:^|do\(\))((?s).*?)(?:$|don't\(\))").unwrap());
 
 fn part1(input: &str) -> usize {
     MULS.captures_iter(input)
@@ -12,9 +14,7 @@ fn part1(input: &str) -> usize {
 }
 
 fn part2(input: &str) -> usize {
-    Regex::new(r"(?:^|do\(\))((?s).*?)(?:$|don't\(\))")
-        .unwrap()
-        .captures_iter(input)
+    SEGS.captures_iter(input)
         .map(|m| m.extract())
         .map(|(_, [segment])| part1(segment))
         .sum()

@@ -22,8 +22,6 @@ Only the four highlighted sections are real mul instructions. Adding up the resu
 
 Scan the corrupted memory for uncorrupted mul instructions. What do you get if you add up all of the results of the multiplications?
 
-Your puzzle answer was `164730528`.
-
 ## Part Two
 
 As you scan through the corrupted memory, you notice that some of the conditional statements are also still intact. If you handle some of the uncorrupted conditional statements in the program, you might be able to get an even more accurate result.
@@ -46,5 +44,3 @@ This corrupted memory is similar to the example from before, but this time the m
 This time, the sum of the results is 48 (2*4 + 8*5).
 
 Handle the new instructions; what do you get if you add up all of the results of just the enabled multiplications?
-
-Your puzzle answer was `70478672`.
