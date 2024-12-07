@@ -1,4 +1,4 @@
-use common::{Itertools, SS, boilerplate};
+use common::{SS, boilerplate};
 use std::{cmp, collections::HashSet};
 
 type Page = u8;
@@ -10,12 +10,12 @@ fn part1(input: SS) -> usize {
     updates
         .filter(|pages| {
             pages.is_sorted_by(|&a, &b| {
-                let correct = rules.contains(&[a, b]);
+                let result = rules.contains(&[a, b]);
                 // Apparently we have a total ordering. Thank you, that makes it
                 // much easier! I've removed more complicated code that could
                 // handle partial orderings.
-                assert!(correct || rules.contains(&[b, a]));
-                correct
+                assert_eq!(result, !rules.contains(&[b, a]));
+                result
             })
         })
         .map(|pages| pages[pages.len() / 2] as usize)
@@ -53,7 +53,7 @@ fn parse(input: SS) -> (Rules, impl Iterator<Item = Vec<Page>>) {
         .collect();
     let updates = update_lines
         .lines()
-        .map(|line| line.split(',').map(|nr| nr.parse().unwrap()).collect_vec());
+        .map(|line| line.split(',').map(|nr| nr.parse().unwrap()).collect());
     (rules, updates)
 }
 
