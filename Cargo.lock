@@ -96,6 +96,7 @@ dependencies = [
  "color-eyre",
  "itertools",
  "paste",
+ "pathfinding",
 ]
 
 [[package]]
@@ -150,6 +151,7 @@ name = "day4"
 version = "0.1.0"
 dependencies = [
  "common",
+ "pathfinding",
 ]
 
 [[package]]
@@ -174,6 +176,14 @@ version = "0.1.0"
 dependencies = [
  "common",
  "rayon",
+]
+
+[[package]]
+name = "day8"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "pathfinding",
 ]
 
 [[package]]

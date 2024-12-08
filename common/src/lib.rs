@@ -1,10 +1,15 @@
 use std::sync::Once;
 
 pub use color_eyre::Result;
+pub use grid::*;
 pub use itertools::*;
 pub use paste::paste;
+pub use positioning::*;
 
 pub type SS = &'static str;
+
+mod grid;
+mod positioning;
 
 static INIT: Once = Once::new();
 
@@ -18,6 +23,18 @@ pub fn to_usize(input: impl AsRef<str>) -> usize {
 
 pub fn to_isize(input: impl AsRef<str>) -> isize {
     input.as_ref().parse().unwrap()
+}
+
+pub fn first<A, B>(tup: (A, B)) -> A {
+    tup.0
+}
+
+pub fn second<A, B>(tup: (A, B)) -> B {
+    tup.1
+}
+
+pub fn swap<A, B>(tup: (A, B)) -> (B, A) {
+    (tup.1, tup.0)
 }
 
 #[macro_export]

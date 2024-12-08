@@ -1,4 +1,4 @@
-use common::{boilerplate, to_isize, Itertools};
+use common::{Itertools, boilerplate, to_isize};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum Direction {

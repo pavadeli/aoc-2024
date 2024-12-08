@@ -1,5 +1,4 @@
-use common::{Itertools, SS, boilerplate};
-use pathfinding::matrix::{Matrix, directions};
+use common::{Dir2, Grid, Itertools, N, Pos2, SS, boilerplate};
 use rayon::prelude::*;
 use std::iter;
 
@@ -34,28 +33,25 @@ fn part2(input: SS) -> usize {
         .sum()
 }
 
-fn parse_grid(input: SS) -> (Matrix<u8>, (usize, usize), (isize, isize)) {
-    let grid: Matrix<u8> = input.lines().map(|line| line.bytes()).collect();
-    let (pos, _) = grid
-        .items()
-        .find(|&(_, &b)| b == b'^')
-        .expect("actor not found");
-    (grid, pos, directions::N)
+fn parse_grid(input: SS) -> (Grid, Pos2, Dir2) {
+    let grid: Grid = input.into();
+    let pos = grid.positions('^').next().expect("actor not found");
+    (grid, pos, N)
 }
 
 fn walk_grid(
-    grid: &Matrix<u8>,
-    mut pos: (usize, usize),
-    mut dir: (isize, isize),
-) -> impl Iterator<Item = ((usize, usize), (isize, isize))> + use<'_> {
+    grid: &Grid,
+    mut pos: Pos2,
+    mut dir: Dir2,
+) -> impl Iterator<Item = (Pos2, Dir2)> + use<'_> {
     iter::from_fn(move || {
         loop {
-            let next = grid.move_in_direction(pos, dir)?;
-            if grid[next] != b'#' {
+            let (next, ch) = grid.step(pos, dir)?;
+            if ch != '#' {
                 pos = next;
                 return Some((pos, dir));
             }
-            dir = (dir.1, -dir.0); // rotate 90°
+            dir = dir.rotate_90_cw();
         }
     })
 }
