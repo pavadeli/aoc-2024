@@ -8,6 +8,14 @@ use std::{
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct Grid(Matrix<u8>);
 
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+pub enum Neighbourhood {
+    /// Only the 4 cardinal directions.
+    Manhattan,
+    /// Cardinal + diagonal directions.
+    All,
+}
+
 impl Grid {
     pub fn get(&self, pos: impl TryInto<Pos2>) -> Option<char> {
         self.0
@@ -37,6 +45,16 @@ impl Grid {
 
     pub fn items(&self) -> impl Iterator<Item = (Pos2, char)> + use<'_> {
         self.0.items().map(|(pos, &b)| (pos.into(), b as char))
+    }
+
+    pub fn neighbours(
+        &self,
+        pos: Pos2,
+        neighbourhood: Neighbourhood,
+    ) -> impl Iterator<Item = (Pos2, char)> + use<'_> {
+        self.0
+            .neighbours(pos.into(), neighbourhood == Neighbourhood::All)
+            .map(|pos| (pos.into(), self.0[pos] as char))
     }
 }
 
