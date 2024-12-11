@@ -9,7 +9,7 @@ fn part2(input: SS) -> usize {
     go(input, &[
         |a, b| a + b,
         |a, b| a * b,
-        |a, b| a * 10usize.pow(b.ilog10() + 1) + b,
+        |a, b| a * 10_usize.pow(b.ilog10() + 1) + b,
     ])
 }
 

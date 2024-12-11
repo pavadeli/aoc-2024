@@ -8,6 +8,8 @@ pub use positioning::*;
 
 pub type SS = &'static str;
 
+pub type Solution<R = usize> = fn(SS) -> R;
+
 mod grid;
 mod positioning;
 
