@@ -21,4 +21,11 @@ boilerplate! {
 }
 EOF
 
+touch $1/src/test.txt
+touch $1/src/real.txt
+
 code $1/src/main.rs
+
+cd $1
+
+cargo watch -cx "nextest run"

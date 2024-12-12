@@ -25,9 +25,9 @@ fn part2(input: SS) -> usize {
         // then process this list in parallel
         .into_par_iter()
         .map_with(grid, |grid, ((pos, dir), (extra, _))| {
-            grid[extra] = b'#';
+            grid[extra] = '#';
             let loops = !walk_grid(grid, pos, dir).all_unique();
-            grid[extra] = b'.';
+            grid[extra] = '.';
             if loops { 1 } else { 0 }
         })
         .sum()

@@ -6,7 +6,7 @@ use std::{
 };
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub struct Grid(Matrix<u8>);
+pub struct Grid(Matrix<char>);
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum Neighbourhood {
@@ -18,14 +18,10 @@ pub enum Neighbourhood {
 
 impl Grid {
     pub fn get(&self, pos: impl TryInto<Pos2>) -> Option<char> {
-        self.0
-            .get(pos.try_into().ok()?.into())
-            .copied()
-            .map(char::from)
+        self.0.get(pos.try_into().ok()?.into()).copied()
     }
 
     pub fn positions(&self, ch: char) -> impl Iterator<Item = Pos2> + use<'_> {
-        let ch = ch as u8;
         self.0
             .items()
             .filter(move |(_, b)| (**b == ch))
@@ -35,16 +31,16 @@ impl Grid {
     pub fn walk(&self, start: Pos2, dir: Dir2) -> impl Iterator<Item = (Pos2, char)> + use<'_> {
         iter::once(start.into())
             .chain(self.0.in_direction(start.into(), dir.into()))
-            .map(|pos| (pos.into(), self.0[pos] as char))
+            .map(|pos| (pos.into(), self.0[pos]))
     }
 
     pub fn step(&self, start: Pos2, dir: Dir2) -> Option<(Pos2, char)> {
         let pos = self.0.move_in_direction(start.into(), dir.into())?;
-        Some((pos.into(), self.0[pos] as char))
+        Some((pos.into(), self.0[pos]))
     }
 
     pub fn items(&self) -> impl Iterator<Item = (Pos2, char)> + use<'_> {
-        self.0.items().map(|(pos, &b)| (pos.into(), b as char))
+        self.0.items().map(|(pos, &b)| (pos.into(), b))
     }
 
     pub fn neighbours(
@@ -54,18 +50,48 @@ impl Grid {
     ) -> impl Iterator<Item = (Pos2, char)> + use<'_> {
         self.0
             .neighbours(pos.into(), neighbourhood == Neighbourhood::All)
-            .map(|pos| (pos.into(), self.0[pos] as char))
+            .map(|pos| (pos.into(), self.0[pos]))
+    }
+
+    pub fn columns(&self) -> usize {
+        self.0.columns
+    }
+
+    pub fn rows(&self) -> usize {
+        self.0.rows
+    }
+
+    pub fn row_iter(&self) -> impl Iterator<Item = &[char]> {
+        self.0.iter()
+    }
+
+    pub fn keys(&self) -> impl Iterator<Item = Pos2> {
+        self.0.keys().map(Pos2::from)
+    }
+
+    pub fn bfs_reachable(
+        &self,
+        start: Pos2,
+        neighbourhood: Neighbourhood,
+        mut predicate: impl FnMut(Pos2, char) -> bool,
+    ) -> impl Iterator<Item = Pos2> {
+        let set = self
+            .0
+            .bfs_reachable(start.into(), neighbourhood == Neighbourhood::All, |p| {
+                predicate(p.into(), self.0[p])
+            });
+        set.into_iter().map(Pos2::from)
     }
 }
 
 impl From<&str> for Grid {
     fn from(value: &str) -> Self {
-        Self(value.lines().map(str::bytes).collect())
+        Self(value.lines().map(str::chars).collect())
     }
 }
 
 impl Index<Pos2> for Grid {
-    type Output = <Matrix<u8> as Index<(usize, usize)>>::Output;
+    type Output = <Matrix<char> as Index<(usize, usize)>>::Output;
 
     fn index(&self, index: Pos2) -> &Self::Output {
         let index: (usize, usize) = index.into();
