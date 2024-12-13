@@ -25,6 +25,8 @@ touch $1/src/test.txt
 touch $1/src/real.txt
 
 code $1/src/main.rs
+code $1/src/real.txt
+code $1/src/test.txt
 
 cd $1
 
