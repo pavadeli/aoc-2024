@@ -10,6 +10,8 @@ pub type SS = &'static str;
 
 pub type Solution<R = usize> = fn(SS) -> R;
 
+pub const CLEAR_TERM: &str = "\x1b[2J\x1b[H";
+
 mod grid;
 mod positioning;
 
