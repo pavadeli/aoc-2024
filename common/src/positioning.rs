@@ -33,6 +33,15 @@ pub const DIRECTIONS_8: [Dir2; 8] = [NE, E, SE, S, SW, W, NW, N];
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Hash)]
 pub struct Pos2(pub usize, pub usize);
 
+impl Pos2 {
+    pub fn saturating_add_dir(self, dir: Dir2) -> Self {
+        Self(
+            self.0.saturating_add_signed(dir.0),
+            self.1.saturating_add_signed(dir.1),
+        )
+    }
+}
+
 impl From<(usize, usize)> for Pos2 {
     fn from(value: (usize, usize)) -> Self {
         Self(value.0, value.1)

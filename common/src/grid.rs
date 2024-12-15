@@ -1,12 +1,27 @@
 use crate::{Dir2, Pos2};
 use pathfinding::matrix::Matrix;
 use std::{
+    fmt::{Debug, Write},
     iter,
     ops::{Index, IndexMut},
 };
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(PartialEq, Eq, Hash)]
 pub struct Grid(Matrix<char>);
+
+impl Clone for Grid {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
+
+    fn clone_from(&mut self, source: &Self) {
+        if self.0.columns != source.0.columns || self.0.rows != source.0.rows {
+            *self = source.clone();
+        } else {
+            self.0.copy_from_slice(&source.0);
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum Neighbourhood {
@@ -82,11 +97,24 @@ impl Grid {
             });
         set.into_iter().map(Pos2::from)
     }
+
+    pub fn swap(&mut self, a: Pos2, b: Pos2) {
+        self.0.swap(a.into(), b.into());
+    }
 }
 
 impl From<&str> for Grid {
     fn from(value: &str) -> Self {
         Self(value.lines().map(str::chars).collect())
+    }
+}
+
+impl<IC> FromIterator<IC> for Grid
+where
+    IC: IntoIterator<Item = char>,
+{
+    fn from_iter<T: IntoIterator<Item = IC>>(iter: T) -> Self {
+        Self(iter.into_iter().collect())
     }
 }
 
@@ -103,5 +131,17 @@ impl IndexMut<Pos2> for Grid {
     fn index_mut(&mut self, index: Pos2) -> &mut Self::Output {
         let index: (usize, usize) = index.into();
         self.0.index_mut(index)
+    }
+}
+
+impl Debug for Grid {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for row in &self.0 {
+            for &ch in row {
+                f.write_char(ch)?
+            }
+            f.write_char('\n')?
+        }
+        Ok(())
     }
 }
