@@ -110,7 +110,7 @@ fn part2(input: SS) -> usize {
 }
 
 fn regions(input: SS) -> impl Iterator<Item = RegionSetImpl> {
-    let mut grid: Grid = input.into();
+    let mut grid = Grid::from(input);
     let mut keys = grid.keys();
     iter::from_fn(move || {
         for pos in &mut keys {

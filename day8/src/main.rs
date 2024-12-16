@@ -19,7 +19,7 @@ fn part2(input: SS) -> usize {
 }
 
 fn parse(input: SS) -> (Grid, impl Iterator<Item = [Pos2; 2]>) {
-    let grid: Grid = input.into();
+    let grid = Grid::from(input);
     let antennas: HashMap<char, HashSet<_>> = grid
         .items()
         .filter(|(_, ch)| *ch != '.')

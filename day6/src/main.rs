@@ -34,7 +34,7 @@ fn part2(input: SS) -> usize {
 }
 
 fn parse_grid(input: SS) -> (Grid, Pos2, Dir2) {
-    let grid: Grid = input.into();
+    let grid = Grid::from(input);
     let pos = grid.positions('^').next().expect("actor not found");
     (grid, pos, N)
 }

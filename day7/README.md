@@ -1,4 +1,4 @@
-# Day 7: Bridge Repair ---
+# Day 7: Bridge Repair
 
 ## Part One
 

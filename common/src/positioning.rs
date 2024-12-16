@@ -40,6 +40,10 @@ impl Pos2 {
             self.1.saturating_add_signed(dir.1),
         )
     }
+
+    pub fn abs_diff(self, other: Self) -> usize {
+        self.0.abs_diff(other.0) + self.1.abs_diff(other.1)
+    }
 }
 
 impl From<(usize, usize)> for Pos2 {
@@ -101,6 +105,11 @@ impl Sub for Pos2 {
 pub struct Dir2(pub isize, pub isize);
 
 impl Dir2 {
+    /// Rotate 90° counter clockwise
+    pub fn rotate_90_ccw(self) -> Self {
+        Self(-self.1, self.0)
+    }
+
     /// Rotate 90° clockwise
     pub fn rotate_90_cw(self) -> Self {
         Self(self.1, -self.0)

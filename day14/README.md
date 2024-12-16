@@ -1,4 +1,4 @@
-# Day 14: Restroom Redoubt ---
+# Day 14: Restroom Redoubt
 
 ## Part One
 

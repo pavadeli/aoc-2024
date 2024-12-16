@@ -1,7 +1,7 @@
 use common::{DIRECTIONS_8, Grid, NE, NW, SE, SS, SW, boilerplate, second};
 
 fn part1(input: SS) -> usize {
-    let grid: &Grid = &input.into();
+    let grid = &Grid::from(input);
     grid.positions('X')
         .flat_map(|from| {
             DIRECTIONS_8.iter().filter(move |&&dir| {
@@ -15,7 +15,7 @@ fn part1(input: SS) -> usize {
 }
 
 fn part2(input: SS) -> usize {
-    let grid: Grid = input.into();
+    let grid = Grid::from(input);
     grid.positions('A')
         .filter(|&from| {
             matches!((

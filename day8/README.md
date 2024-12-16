@@ -1,4 +1,4 @@
-# Day 8: Resonant Collinearity ---
+# Day 8: Resonant Collinearity
 
 ## Part One
 

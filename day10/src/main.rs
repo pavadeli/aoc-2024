@@ -2,7 +2,7 @@ use common::{Grid, Neighbourhood, Pos2, SS, boilerplate};
 use pathfinding::prelude::*;
 
 fn part1(input: SS) -> usize {
-    let grid: Grid = input.into();
+    let grid = Grid::from(input);
     grid.positions('0')
         .map(|head| {
             dfs_reach((head, '0'), |&(pos, level)| {
@@ -15,7 +15,7 @@ fn part1(input: SS) -> usize {
 }
 
 fn part2(input: SS) -> usize {
-    let grid: Grid = input.into();
+    let grid = Grid::from(input);
     grid.positions('0')
         .map(|head| {
             count_paths(

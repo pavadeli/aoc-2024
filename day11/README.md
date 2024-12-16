@@ -1,4 +1,4 @@
-# Day 11: Plutonian Pebbles ---
+# Day 11: Plutonian Pebbles
 
 ## Part One
 

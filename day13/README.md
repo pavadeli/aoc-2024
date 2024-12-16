@@ -1,4 +1,4 @@
-# Day 13: Claw Contraption ---
+# Day 13: Claw Contraption
 
 ## Day One
 
