@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, AddAssign, Sub};
 
 /// East
 pub const E: Dir2 = Dir2(0, 1);
@@ -161,5 +161,11 @@ impl Sub for Dir2 {
 
     fn sub(self, rhs: Self) -> Self::Output {
         Dir2(self.0 - rhs.0, self.1 - rhs.1)
+    }
+}
+
+impl AddAssign for Dir2 {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }

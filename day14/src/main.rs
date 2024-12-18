@@ -1,6 +1,6 @@
 use common::{Itertools, SS, boilerplate, to_isize};
 use pathfinding::grid::Grid;
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
+use rayon::iter::{IndexedParallelIterator, IntoParallelIterator, ParallelIterator};
 
 #[derive(Clone, Copy)]
 struct Robot {
@@ -41,6 +41,7 @@ fn part2(input: SS, width: isize, height: isize) -> isize {
     let baseline_chaos = baseline_chaos * 4 / 5;
     let result = (101..width * height)
         .into_par_iter()
+        .by_exponential_blocks()
         .find_map_first(|s| {
             let robots = robots.iter().map(|r| r.go(s, width, height));
             (calc_chaos(robots, width, height) < baseline_chaos).then_some(s)

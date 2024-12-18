@@ -72,4 +72,31 @@ macro_rules! boilerplate {
 
         }
     };
+    {
+        $($name:ident => { $($input:literal -> $value:expr),* $(,)? })*
+    } => {
+        fn main() {
+            $crate::init();
+            $($({
+                println!(concat!("Result of ", stringify!($name), ", ", stringify!($input), ": {}"), $name($input));
+            })*)*
+        }
+
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            use $crate::paste;
+
+            $($(
+                paste!{
+                    #[test]
+                    fn [<$name _ $input>]() {
+                        $crate::init();
+                        assert_eq!($name($input), $value);
+                    }
+                }
+            )*)*
+
+        }
+    };
 }
