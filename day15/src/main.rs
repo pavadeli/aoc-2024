@@ -5,13 +5,17 @@ fn part1(input: SS) -> usize {
     let (mut grid, moves) = parse(input, |c| [c]);
     let mut robot = grid.positions('@').exactly_one().ok().unwrap();
     grid[robot] = '.';
+
+    #[cfg(not(test))]
+    dump_grid(&mut grid, robot);
+
     for m in moves {
         let (next_pos, found_there) = grid.step(robot, m).unwrap();
         if found_there == '#' {
             // impossible move
             continue;
         }
-        if found_there == 'O' {
+        if found_there == 'O' || found_there == 'o' {
             // see if we can move some blocks;
             let Some((move_to, _)) = grid
                 .walk(robot, m)
@@ -92,7 +96,7 @@ where
 fn dump_grid(grid: &mut Grid, robot: Pos2) {
     grid[robot] = '@';
     println!("{CLEAR_TERM}{grid:?}");
-    sleep(Duration::from_millis(200));
+    sleep(Duration::from_millis(100));
     grid[robot] = '.';
 }
 
@@ -149,7 +153,7 @@ fn move_box(grid: &mut Grid, pos: Pos2, ch: char, dir: Dir2) -> Result<(), ()> {
 }
 
 boilerplate! {
-    part1 => { kid -> 1433 }
+    part1 => { kid -> 0 }
     part1 => { test1 -> 10092, test2 -> 2028, real -> 1413675 }
     part2 => { test1 -> 9021, real -> 1399772 }
 }
