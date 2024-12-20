@@ -1,8 +1,7 @@
-use common::{Itertools, SS, boilerplate, to_usize};
-use pathfinding::{grid::Grid, prelude::*};
+use common::*;
 
 fn part1(input: SS, size: usize, fallen_bytes: usize) -> usize {
-    let mut grid = Grid::new(size, size);
+    let mut grid = pathfinding::Grid::new(size, size);
     grid.fill();
     for pos in parse(input).take(fallen_bytes) {
         grid.remove_vertex(pos);
@@ -12,7 +11,7 @@ fn part1(input: SS, size: usize, fallen_bytes: usize) -> usize {
 }
 
 fn part2(input: SS, size: usize, known_ok_value: usize) -> String {
-    let mut grid = Grid::new(size, size);
+    let mut grid = pathfinding::Grid::new(size, size);
     grid.fill();
     let mut iter = parse(input);
     for pos in iter.by_ref().take(known_ok_value) {
@@ -32,8 +31,11 @@ fn part2(input: SS, size: usize, known_ok_value: usize) -> String {
     panic!("no obstruction found")
 }
 
-fn get_route(grid: &Grid, target: (usize, usize)) -> Option<(Vec<(usize, usize)>, usize)> {
-    astar(
+fn get_route(
+    grid: &pathfinding::Grid,
+    target: (usize, usize),
+) -> Option<(Vec<(usize, usize)>, usize)> {
+    pathfinding::astar(
         &(0, 0),
         |p| grid.neighbours(*p).into_iter().map(|p| (p, 1)),
         |p| grid.distance(*p, target),

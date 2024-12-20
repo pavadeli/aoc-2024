@@ -97,6 +97,7 @@ dependencies = [
  "itertools",
  "paste",
  "pathfinding",
+ "rayon",
 ]
 
 [[package]]
@@ -136,7 +137,6 @@ name = "day10"
 version = "0.1.0"
 dependencies = [
  "common",
- "pathfinding",
 ]
 
 [[package]]
@@ -165,7 +165,6 @@ name = "day14"
 version = "0.1.0"
 dependencies = [
  "common",
- "pathfinding",
  "rayon",
 ]
 
@@ -181,7 +180,6 @@ name = "day16"
 version = "0.1.0"
 dependencies = [
  "common",
- "pathfinding",
 ]
 
 [[package]]
@@ -196,11 +194,25 @@ name = "day18"
 version = "0.1.0"
 dependencies = [
  "common",
- "pathfinding",
+]
+
+[[package]]
+name = "day19"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "regex",
 ]
 
 [[package]]
 name = "day2"
+version = "0.1.0"
+dependencies = [
+ "common",
+]
+
+[[package]]
+name = "day20"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -219,7 +231,6 @@ name = "day4"
 version = "0.1.0"
 dependencies = [
  "common",
- "pathfinding",
 ]
 
 [[package]]
@@ -234,8 +245,6 @@ name = "day6"
 version = "0.1.0"
 dependencies = [
  "common",
- "pathfinding",
- "rayon",
 ]
 
 [[package]]
@@ -251,7 +260,6 @@ name = "day8"
 version = "0.1.0"
 dependencies = [
  "common",
- "pathfinding",
 ]
 
 [[package]]

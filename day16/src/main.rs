@@ -1,12 +1,11 @@
-use common::{Dir2, E, Grid, Itertools, Pos2, SS, boilerplate, first};
-use pathfinding::{directed::astar::astar, prelude::astar_bag};
+use common::*;
 
 const ROTATE_COST: usize = 1000;
 const STEP_COST: usize = 1;
 
 fn part1(input: SS) -> usize {
     let (grid, start, end) = parse(input);
-    let (_, cost) = astar(
+    let (_, cost) = pathfinding::astar(
         &(start, E),
         |(pos, dir)| successors(&grid, *pos, *dir),
         |(pos, _)| pos.abs_diff(end),
@@ -18,7 +17,7 @@ fn part1(input: SS) -> usize {
 
 fn part2(input: SS) -> usize {
     let (grid, start, end) = parse(input);
-    let (paths, _) = astar_bag(
+    let (paths, _) = pathfinding::astar_bag(
         &(start, E),
         |&(pos, dir)| successors(&grid, pos, dir),
         |(pos, _)| pos.abs_diff(end),

@@ -1,4 +1,4 @@
-use common::{DIRECTIONS_8, Grid, NE, NW, SE, SS, SW, boilerplate, second};
+use common::*;
 
 fn part1(input: SS) -> usize {
     let grid = &Grid::from(input);

@@ -5,6 +5,7 @@ pub use grid::*;
 pub use itertools::*;
 pub use paste::paste;
 pub use positioning::*;
+pub use rayon::prelude::*;
 
 pub type SS = &'static str;
 
@@ -14,6 +15,10 @@ pub const CLEAR_TERM: &str = "\x1b[2J\x1b[H";
 
 mod grid;
 mod positioning;
+
+pub mod pathfinding {
+    pub use pathfinding::prelude::*;
+}
 
 static INIT: Once = Once::new();
 

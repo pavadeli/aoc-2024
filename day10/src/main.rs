@@ -1,11 +1,10 @@
-use common::{Grid, Neighbourhood, Pos2, SS, boilerplate};
-use pathfinding::prelude::*;
+use common::*;
 
 fn part1(input: SS) -> usize {
     let grid = Grid::from(input);
     grid.positions('0')
         .map(|head| {
-            dfs_reach((head, '0'), |&(pos, level)| {
+            pathfinding::dfs_reach((head, '0'), |&(pos, level)| {
                 valid_neighbours(&grid, pos, level)
             })
             .filter(|(_, ch)| *ch == '9')
@@ -18,7 +17,7 @@ fn part2(input: SS) -> usize {
     let grid = Grid::from(input);
     grid.positions('0')
         .map(|head| {
-            count_paths(
+            pathfinding::count_paths(
                 (head, '0'),
                 |&(pos, level)| valid_neighbours(&grid, pos, level),
                 |(_, ch)| *ch == '9',

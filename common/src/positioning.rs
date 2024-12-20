@@ -1,4 +1,7 @@
-use std::ops::{Add, AddAssign, Sub};
+use std::{
+    iter::Sum,
+    ops::{Add, AddAssign, Sub},
+};
 
 /// East
 pub const E: Dir2 = Dir2(0, 1);
@@ -30,7 +33,7 @@ pub const DIRECTIONS_4: [Dir2; 4] = [E, S, W, N];
 /// Eight main directions with diagonals
 pub const DIRECTIONS_8: [Dir2; 8] = [NE, E, SE, S, SW, W, NW, N];
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Hash, PartialOrd, Ord)]
 pub struct Pos2(pub usize, pub usize);
 
 impl Pos2 {
@@ -101,7 +104,7 @@ impl Sub for Pos2 {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default, Hash, PartialOrd, Ord)]
 pub struct Dir2(pub isize, pub isize);
 
 impl Dir2 {
@@ -167,5 +170,11 @@ impl Sub for Dir2 {
 impl AddAssign for Dir2 {
     fn add_assign(&mut self, rhs: Self) {
         *self = *self + rhs;
+    }
+}
+
+impl Sum for Dir2 {
+    fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
+        iter.fold(Dir2::default(), |a, b| a + b)
     }
 }

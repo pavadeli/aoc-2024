@@ -1,4 +1,4 @@
-use common::{SS, boilerplate};
+use common::*;
 use std::{cmp, collections::HashSet};
 
 type Page = u8;

@@ -1,4 +1,4 @@
-use common::{Itertools, SS, boilerplate, to_usize};
+use common::*;
 
 #[derive(Debug)]
 struct Machine {

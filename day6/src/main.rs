@@ -1,5 +1,4 @@
-use common::{Dir2, Grid, Itertools, N, Pos2, SS, boilerplate};
-use rayon::prelude::*;
+use common::*;
 use std::iter;
 
 fn part1(input: SS) -> usize {

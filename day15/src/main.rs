@@ -1,4 +1,4 @@
-use common::{CLEAR_TERM, Dir2, E, Grid, Itertools, N, Pos2, S, SS, W, boilerplate};
+use common::*;
 use std::{mem, thread::sleep, time::Duration};
 
 fn part1(input: SS) -> usize {

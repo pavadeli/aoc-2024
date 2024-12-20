@@ -13,7 +13,7 @@ cargo new $1
 cargo add common -p $1
 
 cat >$1/src/main.rs <<EOF
-use common::boilerplate;
+use common::*;
 
 boilerplate! {
     part1 => {}

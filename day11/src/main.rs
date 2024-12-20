@@ -1,6 +1,6 @@
 #![allow(non_upper_case_globals)]
 
-use common::{SS, Solution, boilerplate};
+use common::*;
 use std::{array, collections::HashMap};
 
 const part1: Solution = go::<25>;

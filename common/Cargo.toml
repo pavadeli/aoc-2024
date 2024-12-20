@@ -8,3 +8,4 @@ color-eyre.workspace = true
 itertools.workspace = true
 paste.workspace = true
 pathfinding.workspace = true
+rayon.workspace = true

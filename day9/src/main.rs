@@ -1,4 +1,4 @@
-use common::{SS, boilerplate};
+use common::*;
 use std::collections::VecDeque;
 
 // solution: "simulate defrag" and calc result in one, by using a VecDeque, we

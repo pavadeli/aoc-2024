@@ -1,4 +1,4 @@
-use common::{boilerplate, to_usize, Itertools};
+use common::*;
 
 fn part1(input: &str) -> usize {
     let (mut left, mut right) = get_lists(input);

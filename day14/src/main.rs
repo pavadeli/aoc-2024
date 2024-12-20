@@ -1,6 +1,4 @@
-use common::{Itertools, SS, boilerplate, to_isize};
-use pathfinding::grid::Grid;
-use rayon::iter::{IndexedParallelIterator, IntoParallelIterator, ParallelIterator};
+use common::*;
 
 #[derive(Clone, Copy)]
 struct Robot {
@@ -52,7 +50,9 @@ fn part2(input: SS, width: isize, height: isize) -> isize {
 }
 
 fn dump_grid(robots: impl IntoIterator<Item = Robot>) {
-    let grid = Grid::from_coordinates(&robots.into_iter().map(|r| r.pos).collect_vec()).unwrap();
+    let grid =
+        pathfinding::Grid::from_coordinates(&robots.into_iter().map(|r| r.pos).collect_vec())
+            .unwrap();
     eprintln!("{grid:?}");
 }
 

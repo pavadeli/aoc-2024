@@ -1,7 +1,8 @@
 [package]
-name = "day18"
+name = "day19"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 common.workspace = true
+regex.workspace = true

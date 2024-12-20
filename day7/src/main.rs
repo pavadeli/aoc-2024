@@ -1,5 +1,4 @@
-use common::{Itertools, SS, boilerplate, to_usize};
-use rayon::iter::{ParallelBridge, ParallelIterator};
+use common::*;
 
 fn part1(input: SS) -> usize {
     go(input, &[|a, b| a + b, |a, b| a * b])
