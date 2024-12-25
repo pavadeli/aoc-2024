@@ -1,6 +1,5 @@
-use circuit::{Circuit, Op, Wire, WireKind};
+use circuit::{Circuit, Op};
 use common::*;
-use id_arena::Id;
 use std::collections::BTreeMap;
 
 mod circuit;
@@ -9,10 +8,10 @@ fn part1(input: SS) -> usize {
     let mut circuit = Circuit::parse(input, &[]);
     circuit
         .wires()
-        .filter_map(|w| Some((w.id, w.name.as_z()?)))
+        .filter_map(|w| Some((w.name, w.as_z()?)))
         .collect_vec()
         .into_iter()
-        .map(|(id, nr)| circuit.eval(id) << nr)
+        .map(|(name, nr)| circuit.eval(name) << nr)
         .sum()
 }
 
@@ -23,11 +22,9 @@ fn part2(input: SS, swaps: &[(SS, SS)]) -> String {
     let circuit = Circuit::parse(input, swaps);
     let mut outer_wires = circuit
         .wires()
-        .filter_map(|w| match w.name {
-            WireKind::X(nr) => Some(('x', (nr, w.id))),
-            WireKind::Y(nr) => Some(('y', (nr, w.id))),
-            WireKind::Z(nr) => Some(('z', (nr, w.id))),
-            WireKind::Other(_) => None,
+        .filter_map(|w| {
+            let (kind, nr) = w.as_io()?;
+            Some((kind, (nr, w.name)))
         })
         .into_grouping_map()
         .collect::<BTreeMap<_, _>>();
@@ -39,7 +36,11 @@ fn part2(input: SS, swaps: &[(SS, SS)]) -> String {
     // Now evaluate the first half adder
     println!("evaluating first half adder");
     let (mut sum, mut carry) = eval_half_adder(&circuit, x_wires[&0], y_wires[&0]);
-    circuit.expect_same_wires(sum, z_wires[&0], "output of first half adder");
+    assert_eq!(
+        sum, z_wires[&0],
+        "wire mismatch in output of first half adder, got: {:?} and {:?}",
+        sum, z_wires[&0]
+    );
 
     for (i, (&a, &b, &z)) in multizip((x_wires.values(), y_wires.values(), z_wires.values()))
         .enumerate()
@@ -47,18 +48,16 @@ fn part2(input: SS, swaps: &[(SS, SS)]) -> String {
     {
         println!("evaluating full adder {i}");
         (sum, carry) = eval_full_adder(&circuit, a, b, carry);
-        circuit.expect_same_wires(sum, z, format!("output of full adder {i}"));
+        assert_eq!(
+            sum, z,
+            "wire mismatch in output of full adder {i}, got: {sum:?} and {z:?}"
+        );
     }
 
     swaps.iter().flat_map(|(a, b)| [a, b]).sorted().join(",")
 }
 
-fn eval_full_adder(
-    circuit: &Circuit,
-    a: Id<Wire>,
-    b: Id<Wire>,
-    c: Id<Wire>,
-) -> (Id<Wire>, Id<Wire>) {
+fn eval_full_adder(circuit: &Circuit, a: SS, b: SS, c: SS) -> (SS, SS) {
     let (half_sum, half_carry) = eval_half_adder(circuit, a, b);
 
     let mut gates = circuit
@@ -90,7 +89,7 @@ fn eval_full_adder(
     );
 
     let half_carry = circuit.wire(half_carry);
-    circuit.expect_same_outputs(half_carry.id, carry_gate.out, "half-carry vs carry-gate");
+    circuit.expect_same_outputs(half_carry.name, carry_gate.out, "half-carry vs carry-gate");
     let carry_gate = circuit
         .output_gates(&half_carry.outputs)
         .exactly_one()
@@ -101,7 +100,7 @@ fn eval_full_adder(
     (sum_gate.out, carry_gate.out)
 }
 
-fn eval_half_adder(circuit: &Circuit, a: Id<Wire>, b: Id<Wire>) -> (Id<Wire>, Id<Wire>) {
+fn eval_half_adder(circuit: &Circuit, a: SS, b: SS) -> (SS, SS) {
     // Two lines into a half adder should always be connected to the same two
     // gates.
     circuit.expect_same_outputs(a, b, "inputs of half adder");
@@ -123,7 +122,7 @@ fn eval_half_adder(circuit: &Circuit, a: Id<Wire>, b: Id<Wire>) -> (Id<Wire>, Id
     (sum_gate.out, carry_gate.out)
 }
 
-const SWAPS: &[(&str, &str); 4] = &[
+const SWAPS: &[(&str, &str)] = &[
     ("z12", "djg"),
     ("sbg", "z19"),
     ("hjm", "mcq"),
