@@ -1,9 +1,6 @@
-use common::{Itertools, SS, second, swap, to_usize};
+use common::{Itertools, SS, second, to_usize};
 use id_arena::{Arena, Id};
-use std::{
-    collections::{BTreeSet, HashMap},
-    fmt::Display,
-};
+use std::collections::{BTreeSet, HashMap};
 
 #[derive(Clone, Debug)]
 pub struct Wire {
@@ -44,14 +41,14 @@ pub enum Op {
     Xor,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub struct Gate {
     pub inp: [SS; 2],
     pub op: Op,
     pub out: SS,
 }
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct Circuit {
     gates: Arena<Gate>,
     wires: HashMap<SS, Wire>,
@@ -66,46 +63,41 @@ impl Circuit {
         self.wires.entry(name).or_insert(Wire::new(name))
     }
 
-    pub fn expect_input_to_contain(&self, gate: &Gate, a: SS, b: SS, expected: impl Display) {
+    pub fn assert_input_contains(&self, gate: &Gate, a: SS, b: SS) -> Result<(), Vec<SS>> {
         if gate.inp.contains(&a) && gate.inp.contains(&b) {
-            return;
+            return Ok(());
         }
-        panic!(
-            "expect {expected}, gate inputs: [{}], wire a: {a}, wire b: {b}",
-            gate.inp.iter().map(|&id| self.wire(id).name).join(","),
-        );
+        Err(gate.inp.iter().copied().chain([a, b]).unique().collect())
     }
 
-    pub fn expect_same_outputs(&self, a: SS, b: SS, ctx: impl Display) {
+    pub fn assert_same_outputs(&self, a: SS, b: SS) -> Result<(), Vec<SS>> {
         let a = &self.wire(a);
         let b = &self.wire(b);
         if a.outputs == b.outputs {
-            return;
+            return Ok(());
         }
-        let expected_from = |wire: &Wire| {
-            wire.outputs
-                .iter()
-                .map(|&g| {
-                    let id = *self
-                        .gate(g)
-                        .inp
-                        .iter()
-                        .filter(|&&i| i != wire.name)
-                        .exactly_one()
-                        .unwrap();
-                    self.wire(id).name
-                })
-                .collect_vec()
-        };
 
-        panic!(
-            "wires {} and {} are not connected to the same gates in {ctx}, \
-             expected from left: {:?}, expected from right: {:?}",
-            a.name,
-            b.name,
-            expected_from(a),
-            expected_from(b)
-        )
+        fn expected_from<'a>(
+            wire: &'a Wire,
+            this: &'a Circuit,
+        ) -> impl Iterator<Item = SS> + use<'a> {
+            wire.outputs.iter().map(|&g| {
+                *this
+                    .gate(g)
+                    .inp
+                    .iter()
+                    .filter(|&&i| i != wire.name)
+                    .exactly_one()
+                    .unwrap()
+            })
+        }
+
+        Err([a.name, b.name]
+            .into_iter()
+            .chain(expected_from(a, self))
+            .chain(expected_from(b, self))
+            .unique()
+            .collect())
     }
 
     pub fn gate(&self, id: Id<Gate>) -> &Gate {
@@ -140,12 +132,7 @@ impl Circuit {
         value
     }
 
-    pub fn parse(input: SS, swaps: &[(SS, SS)]) -> Self {
-        let swaps: HashMap<_, _> = swaps
-            .iter()
-            .copied()
-            .chain(swaps.iter().copied().map(swap))
-            .collect();
+    pub fn parse(input: SS) -> Self {
         let mut circuit = Self::default();
         let mut lines = input.lines();
         for line in lines.by_ref() {
@@ -167,13 +154,19 @@ impl Circuit {
             };
             let mut inp = [lhs, rhs];
             inp.sort();
-            // maybe swap output of gate
-            let out = swaps.get(out).copied().unwrap_or(out);
             let id = circuit.gates.alloc(Gate { inp, op, out });
             circuit.wire_mut(inp[0]).outputs.insert(id);
             circuit.wire_mut(inp[1]).outputs.insert(id);
             circuit.wire_mut(out).input = Some(id);
         }
         circuit
+    }
+
+    pub fn swap_outs(&mut self, a: SS, b: SS) {
+        let gate_id_b = self.wire(b).input.unwrap();
+        let gate_id_a = self.wire_mut(a).input.replace(gate_id_b).unwrap();
+        self.wire_mut(b).input = Some(gate_id_a);
+        self.gates[gate_id_a].out = b;
+        self.gates[gate_id_b].out = a;
     }
 }
